@@ -1,0 +1,38 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Player.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Wall.tscn" type="PackedScene" id=2]
+
+[sub_resource type="CubeMesh" id=1]
+
+[sub_resource type="ConcavePolygonShape" id=2]
+data = PoolVector3Array( -1, 1, 1, 1, 1, 1, -1, -1, 1, 1, 1, 1, 1, -1, 1, -1, -1, 1, 1, 1, -1, -1, 1, -1, 1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, 1, 1, 1, 1, 1, -1, 1, -1, 1, 1, 1, -1, 1, -1, -1, 1, -1, 1, -1, 1, -1, -1, 1, 1, -1, -1, -1, -1, 1, 1, -1, -1, 1, -1, -1, -1, 1, 1, 1, -1, 1, 1, 1, 1, -1, -1, 1, 1, -1, 1, -1, 1, 1, -1, -1, -1, 1, 1, -1, 1, -1, -1, -1, 1, -1, 1, 1, -1, -1, -1, -1, -1 )
+
+[node name="World" type="Spatial"]
+
+[node name="Floor" type="Spatial" parent="."]
+transform = Transform( 10, 0, 0, 0, 0.2, 0, 0, 0, 10, 0, 0, 0 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Floor"]
+mesh = SubResource( 1 )
+skeleton = NodePath("")
+
+[node name="StaticBody" type="StaticBody" parent="Floor/MeshInstance"]
+collision_mask = 2
+
+[node name="CollisionShape" type="CollisionShape" parent="Floor/MeshInstance/StaticBody"]
+shape = SubResource( 2 )
+
+[node name="Walls" type="Spatial" parent="."]
+
+[node name="West" parent="Walls" instance=ExtResource( 2 )]
+transform = Transform( 0.5, 0, 0, 0, 1.5, 0, 0, 0, 10, 10, 1.5, 0 )
+
+[node name="North" parent="Walls" instance=ExtResource( 2 )]
+transform = Transform( 10, 0, 0, 0, 1.5, 0, 0, 0, 0.5, 0, 1.5, 10 )
+
+[node name="DirectionalLight" type="DirectionalLight" parent="."]
+transform = Transform( 1, 0, 0, 0, 0.76044, 0.649408, 0, -0.649408, 0.76044, 0, 22.6524, 21.3011 )
+
+[node name="Player" parent="." instance=ExtResource( 1 )]
+transform = Transform( -1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -0.308817, 1.71859, 0.0337989 )

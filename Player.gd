@@ -11,6 +11,7 @@ var _snap_vector := Vector3.DOWN
 
 onready var _arm_pivot = $ArmPivot
 onready var _camera_pivot = $CameraPivot
+onready var _raycast = $CameraPivot/Camera/RayCast
 
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -30,7 +31,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		_arm_pivot.rotation.x = clamp(_arm_pivot.rotation.x, deg2rad(-max_pivot_rotation), deg2rad(max_pivot_rotation))
 		_camera_pivot.rotation.x = clamp(_camera_pivot.rotation.x, deg2rad(-max_pivot_rotation), deg2rad(max_pivot_rotation))
 
-func _physics_process(delta: float) -> void:
+func _input_move(delta: float) -> void:
 	var move_direction := Vector3.ZERO
 
 	if Input.is_action_pressed("move_forward"):
@@ -57,3 +58,21 @@ func _physics_process(delta: float) -> void:
 		_snap_vector = Vector3.DOWN
 
 	_velocity = move_and_slide_with_snap(_velocity, _snap_vector, Vector3.UP, true)
+
+func _input_shoot(delta: float) -> void:
+	if Input.is_action_just_pressed("shoot"):
+		var bullet = preload("res://Bullet.tscn").instance()
+
+		get_parent().add_child(bullet)
+
+		bullet.global_transform.origin = $ArmPivot/Weapon.global_transform.origin
+
+		_raycast.force_raycast_update()
+
+		if _raycast.is_colliding():
+			var target = _raycast.get_collider().get_parent()
+			target.queue_free()
+
+func _physics_process(delta: float) -> void:
+	_input_move(delta)
+	_input_shoot(delta)
